@@ -1,5 +1,5 @@
-from nginx.base_setting import BaseSetting
-from nginx.utils import str2bool
+from nginx_conf.base_setting import BaseSetting
+from nginx_conf.utils import str2bool
 
 
 class Uwsgi(BaseSetting):

@@ -4,7 +4,7 @@ from nginx.nginx import Nginx
 nginx_conf = {
     'nginx_host': '127.0.0.1',
     'nginx_port': 12000,
-    'nginx_conf_dir': '/opt/homebrew/etc/nginx',
+    'nginx_conf_dir': '/opt/homebrew/etc/nginx_conf',
     'service_name': 'api',
     'uwsgi_path': '/Users/jiaochanghao/gitee_clone/django-rest-framework/api/conf/uwsgi.ini',
     'service_dir': '/Users/jiaochanghao/gitee_clone/django-rest-framework/api',
