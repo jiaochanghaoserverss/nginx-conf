@@ -55,7 +55,7 @@ class BaseSetting(object):
             raise "虚拟环境不存在"
 
     def traverse_nginx_directory(self, directory):
-        conf = 'conf'
+        conf = 'conf.d'
         for _, dirs, _ in os.walk(directory):
             if conf in dirs:
                 nginx_conf_path = self.base_path(directory) / conf
@@ -64,6 +64,7 @@ class BaseSetting(object):
                 nginx_conf_path = self.base_path(directory) / conf
                 nginx_conf_path.mkdir(parents=True, exist_ok=True)
                 return nginx_conf_path
+
     @property
     def nginx_conf_file(self):
         path = self.traverse_nginx_directory(self.args.nginx_conf_dir)

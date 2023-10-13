@@ -1,12 +1,9 @@
-from nginx.uwsgi import Uwsgi
+from nginx_conf.uwsgi import Uwsgi
 
 
 uwsgi_conf = {
-    'uwsgi_port': 11000,
-    'conf_dir': 'conf',
     'service_dir': '/Users/jiaochanghao/gitee_clone/django-rest-framework/api',
-    'gen_uwsgi': True,
-    'logs_dir': 'logs',
+    'conf_dir': 'conf',
     'virtualenv_dir': '/Users/jiaochanghao/.virtualenvs/api',
 }
 

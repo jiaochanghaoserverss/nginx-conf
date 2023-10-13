@@ -1,5 +1,6 @@
 from nginx_conf.base_setting import BaseSetting
 from nginx_conf.utils import str2bool
+from nginx_conf import const
 
 
 class Uwsgi(BaseSetting):
@@ -7,17 +8,15 @@ class Uwsgi(BaseSetting):
     def __init__(self, uwsgi_conf):
         super().__init__()
         uwsgi_parser = self.parser
-        uwsgi_parser.add_argument("--uwsgi_port", type=int, default=uwsgi_conf.get('uwsgi_port'), help="uwsgi端口号")
-        uwsgi_parser.add_argument("--nginx_port", type=int,
-                                  default=80 if not uwsgi_conf.get('nginx_port') else uwsgi_conf.get('nginx_port'),
-                                  help="uwsgi端口号")
+        uwsgi_parser.add_argument("--uwsgi_port", type=int, default=const.UwsgiConf.UWSGI_PORT, help="uwsgi端口号")
+        uwsgi_parser.add_argument("--nginx_port", type=int, default=const.NginxConf.NGINX_PORT, help="uwsgi端口号")
+
         uwsgi_parser.add_argument("--service_dir", type=str, default=uwsgi_conf.get('service_dir'), help="项目目录")
         uwsgi_parser.add_argument("--conf_dir", type=str, default=uwsgi_conf.get('conf_dir'), help="项目配置目录")
         uwsgi_parser.add_argument("--virtualenv_dir", type=str, default=uwsgi_conf.get('virtualenv_dir'),
                                   help="虚拟环境配置目录")
-        uwsgi_parser.add_argument("--logs_dir", type=str, default=uwsgi_conf.get('logs_dir'), help="uwsgi日志目录")
-        uwsgi_parser.add_argument("-u", "--gen_uwsgi", type=str2bool, default=True,
-                                  help="生成uwsgi")
+        uwsgi_parser.add_argument("--logs_dir", type=str, default='logs', help="uwsgi日志目录")
+        uwsgi_parser.add_argument("-u", "--gen_uwsgi", type=str2bool, default=True, help="生成uwsgi")
         self.uwsgi_args = self.args_func(uwsgi_parser)
 
     def gen_uwsgi(self):

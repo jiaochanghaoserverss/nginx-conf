@@ -1,24 +1,31 @@
 from nginx_conf.base_setting import BaseSetting
-from nginx_conf.utils import str2bool
+from nginx_conf.utils import execute_command
+from nginx_conf import const
+from nginx_conf.error import MyNginxException
 
 
 class Nginx(BaseSetting):
-    def __init__(self, nginx_conf):
+
+    def __init__(self, service_dir, uwsgi_path):
         super().__init__()
+        nginx_conf_dir = f'{self.nginx_exists()}/{const.NginxConf.NGINX_OTHER}'
+        service_name = self.get_service_name(service_dir)
+        uwsgi_path = self.get_uwsgi_path(service_dir, uwsgi_path)
         nginx_parser = self.parser
         nginx_parser.add_argument("--nginx_host", type=str, help="nginx域名",
-                                  default=0 if not nginx_conf.get('nginx_host') else nginx_conf.get('nginx_host'))
-        nginx_parser.add_argument("--nginx_port", type=int, default=nginx_conf.get('nginx_port'), help="nginx端口")
-        nginx_parser.add_argument("--uwsgi_port", type=int, default=nginx_conf.get('uwsgi_port'), help="uwsgi端口号")
-        nginx_parser.add_argument("--nginx_conf_dir", type=str, default=nginx_conf.get('nginx_conf_dir'),
+                                  default=const.NginxConf.NGINX_HOST)
+        nginx_parser.add_argument("--nginx_port", type=int, default=const.NginxConf.NGINX_PORT)
+        nginx_parser.add_argument("--uwsgi_port", type=int, default=const.UwsgiConf.UWSGI_PORT, help="uwsgi端口号")
+        nginx_parser.add_argument("--nginx_conf_dir", type=str, default=nginx_conf_dir,
                                   help="nginx配置目录")
-        nginx_parser.add_argument("--service_name", type=str, default=nginx_conf.get('service_name'),
+        nginx_parser.add_argument("--service_name", type=str, default=service_name,
                                   help="nginx配置文件名称/项目名称")
-        nginx_parser.add_argument("--uwsgi_path", type=str, default=nginx_conf.get('uwsgi_path'),
+        nginx_parser.add_argument("--uwsgi_path", type=str, default=uwsgi_path,
                                   help="uwsgi.ini文件路径")
-        nginx_parser.add_argument("--logs_dir", type=str, default=nginx_conf.get('logs_dir'), help="nginx日志目录")
-        nginx_parser.add_argument("--static_dir", type=str, default=nginx_conf.get('static_dir'), help="静态文件目录")
-        nginx_parser.add_argument("--service_dir", type=str, default=nginx_conf.get('service_dir'), help="项目目录")
+
+        nginx_parser.add_argument("--logs_dir", type=str, default=const.ProjectConf.LOGS, help="nginx日志目录")
+        nginx_parser.add_argument("--static_dir", type=str, default=const.ProjectConf.STATIC, help="静态文件目录")
+        nginx_parser.add_argument("--service_dir", type=str, default=service_dir, help="项目目录")
 
         self.nginx_args = self.args_func(nginx_parser)
 
@@ -51,3 +58,15 @@ server{{
 """, encoding='utf8')
         return nginx_file_path
 
+    def nginx_exists(self):
+        returncode, result, _ = execute_command(f"which {const.NginxConf.NGINX}")
+        if returncode == 0:
+            return result
+        else:
+            raise MyNginxException('Nginx does not exist')
+
+    def get_uwsgi_path(self, service_dir, uwsgi_path):
+        return f"{service_dir}/{uwsgi_path}"
+
+    def get_service_name(self, service_name):
+        return service_name.split('/')[-1]
