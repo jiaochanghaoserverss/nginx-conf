@@ -1,7 +1,7 @@
 """
 常量
 """
-
+nginx_error_list = ['nginx: command not found']
 
 class NginxConf:
     NGINX = 'nginx'
@@ -38,5 +38,4 @@ class ProjectConf:
     CHOICES = (
         (LOGS, 'logs'),
         (STATIC, 'static'),
-
     )

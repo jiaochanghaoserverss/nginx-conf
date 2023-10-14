@@ -5,3 +5,5 @@ class MyNginxException(Exception):
 
     def __str__(self):
         return f"My Nginx Exception: {self.message}"
+
+
